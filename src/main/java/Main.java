@@ -142,7 +142,7 @@ public class Main {
         float width = 155f*coef;
         float height = 20f*coef;
         float radius = height/2f;
-        float[] yposadj = new float[]{40f,24f,72f,24f,24f,71f};
+        float[] yposadj = new float[]{40f,24f,72f,24f,24f,24f};
 
         int item = 2;
 
@@ -267,7 +267,7 @@ public class Main {
         cb.addTemplate(page, 0, 0);
 
         xpos = 340f;
-        ypos = 315f;
+        ypos = 342f;
         coef = 0.50f;
         width = 155f*coef;
         height = 20f*coef;
