@@ -30,9 +30,9 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         if(isDemo){
-            datadir = "E:/PCC/R Scripts/Vaginal_Microbiome/Output/PCC_Vaginal_2023-11-22-11-05-04"; // Do not change this as it is specific to demo report.
+            datadir = "E:/PCC/R Scripts/Vaginal_Microbiome/Output/PCC_Vaginal_2023-11-24-14-13-13"; // Do not change this as it is specific to demo report.
         }else{
-            datadir = "E:/PCC/R Scripts/Vaginal_Microbiome/Output/PCC_Vaginal_2023-11-22-11-05-04";
+            datadir = "E:/PCC/R Scripts/Vaginal_Microbiome/Output/PCC_Vaginal_2023-11-24-14-13-13";
         }
         //datadir = args[0];
         filesindatadir = new File(datadir).list();
@@ -142,11 +142,11 @@ public class Main {
         float width = 155f*coef;
         float height = 20f*coef;
         float radius = height/2f;
-        float[] yposadj = new float[]{40f,24f,72f,24f,24f,48f};
+        float[] yposadj = new float[]{40f,24f,72f,24f,24f,71f};
 
         int item = 2;
 
-        for(int i=2;i<7;i++){
+        for(int i=2;i<8;i++){
             Image img = Image.getInstance(datadir+"/"+dat.get(keys.get(i)));
             ypos = ypos - yposadj[i-2];
             img.setAbsolutePosition(xpos, ypos);
@@ -262,19 +262,39 @@ public class Main {
         String text0902 = dat.get(keys.get(item++));
         addParagraph(text0902, cb,xpos,ypos-195f, xpos+width, ypos-5f,CANDARA_REGULAR,10f);
 
-        for(int i=10;i<16;i++){
+        page = writer.getImportedPage(reader, 10);
+        document.newPage();
+        cb.addTemplate(page, 0, 0);
+
+        xpos = 340f;
+        ypos = 315f;
+        coef = 0.50f;
+        width = 155f*coef;
+        height = 20f*coef;
+        radius = height/2f;
+
+        int item2 = item;
+        for(int i=item2;i<item2+5;i++) {
+            img = Image.getInstance(datadir + "/" + dat.get(keys.get(i)));
+            item++;
+            img.setAbsolutePosition(xpos, ypos);
+            drawGraphSmall(cb, img, xpos, ypos, width, height, radius);
+            ypos -= 28f;
+        }
+
+        for(int i=11;i<18;i++){
             page = writer.getImportedPage(reader, i);
             document.newPage();
             cb.addTemplate(page, 0, 0);
         }
 
         if(!isDemo){
-            page = writer.getImportedPage(reader, 16);
+            page = writer.getImportedPage(reader, 18);
             document.newPage();
             cb.addTemplate(page, 0, 0);
         }
 
-        for(int i=17;i<19;i++){
+        for(int i=19;i<21;i++){
             page = writer.getImportedPage(reader, i);
             document.newPage();
             cb.addTemplate(page, 0, 0);
