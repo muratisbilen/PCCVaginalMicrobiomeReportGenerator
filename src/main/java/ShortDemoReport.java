@@ -13,7 +13,7 @@ import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.*;
 import org.apache.commons.compress.utils.IOUtils;
 
-public class Main {
+public class ShortDemoReport {
 
     private static InputStream candara;
     private static InputStream candarabold;
@@ -86,7 +86,7 @@ public class Main {
         latobold = new Main().getClass().getResourceAsStream("Lato-Bold.ttf");
         latoblack = new Main().getClass().getResourceAsStream("Lato-Black.ttf");
 
-        File out = new File(outputFolderfile.getAbsolutePath()+"/"+barcode+(isDemo?"_demo":"")+".pdf");
+        File out = new File(outputFolderfile.getAbsolutePath()+"/"+barcode+(isDemo?"_short_demo":"")+".pdf");
 
         com.itextpdf.text.Document document = new com.itextpdf.text.Document(PageSize.A4);
         PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(out));
@@ -158,150 +158,6 @@ public class Main {
 
         item++;
         addWatermark(cb,CANDARA_BOLD);
-
-        page = writer.getImportedPage(reader, 4);
-        document.newPage();
-        cb.addTemplate(page, 0, 0);
-        addWatermark(cb,CANDARA_BOLD);
-
-        page = writer.getImportedPage(reader, 5);
-        document.newPage();
-        cb.addTemplate(page, 0, 0);
-
-        Image img = Image.getInstance(datadir+"/"+dat.get(keys.get(item++)));
-        xpos = 55f;
-        ypos = 415f;
-        coef = 1.05f;
-        width = 460f*coef;
-        height = 17f*coef;
-        radius = height/2f;
-        img.setAbsolutePosition(xpos, ypos);
-
-        addParagraph("Ihr Ergebnis:", cb,xpos,ypos, xpos+width, ypos+50f,LATO_BOLD,15f);
-
-        drawGraphLarge(cb,img,xpos,ypos,width,height,radius);
-
-        String text0502 = dat.get(keys.get(item++));
-        addParagraph(text0502, cb,xpos,ypos-195f, xpos+width, ypos-5f,CANDARA_REGULAR,10f);
-        addWatermark(cb,CANDARA_BOLD);
-
-        page = writer.getImportedPage(reader, 6);
-        document.newPage();
-        cb.addTemplate(page, 0, 0);
-
-        img = Image.getInstance(datadir+"/"+dat.get(keys.get(item++)));
-        xpos = 55f;
-        ypos = 455f;
-        coef = 1.05f;
-        width = 460f*coef;
-        height = 17f*coef;
-        radius = height/2f;
-        img.setAbsolutePosition(xpos, ypos);
-
-        addParagraph("Ihr Ergebnis:", cb,xpos,ypos, xpos+width, ypos+50f,LATO_BOLD,15f);
-
-        drawGraphLarge(cb,img,xpos,ypos,width,height,radius);
-
-        String text0602 = dat.get(keys.get(item++));
-        addParagraph(text0602, cb,xpos,ypos-195f, xpos+width, ypos-5f,CANDARA_REGULAR,10f);
-        addWatermark(cb,CANDARA_BOLD);
-
-        page = writer.getImportedPage(reader, 7);
-        document.newPage();
-        cb.addTemplate(page, 0, 0);
-
-        img = Image.getInstance(datadir+"/"+dat.get(keys.get(item++)));
-        xpos = 55f;
-        ypos = 315f;
-        coef = 1.05f;
-        width = 460f*coef;
-        height = 17f*coef;
-        radius = height/2f;
-        img.setAbsolutePosition(xpos, ypos);
-
-        addParagraph("Ihr Ergebnis:", cb,xpos,ypos, xpos+width, ypos+50f,LATO_BOLD,15f);
-
-        drawGraphLarge(cb,img,xpos,ypos,width,height,radius);
-
-        String text0702 = dat.get(keys.get(item++));
-        addParagraph(text0702, cb,xpos,ypos-195f, xpos+width, ypos-5f,CANDARA_REGULAR,10f);
-        addWatermark(cb,CANDARA_BOLD);
-
-        page = writer.getImportedPage(reader, 8);
-        document.newPage();
-        cb.addTemplate(page, 0, 0);
-
-        img = Image.getInstance(datadir+"/"+dat.get(keys.get(item++)));
-        xpos = 55f;
-        ypos = 257f;
-        coef = 1.05f;
-        width = 460f*coef;
-        height = 17f*coef;
-        radius = height/2f;
-        img.setAbsolutePosition(xpos, ypos);
-
-        addParagraph("Ihr Ergebnis:", cb,xpos,ypos, xpos+width, ypos+50f,LATO_BOLD,15f);
-
-        drawGraphLarge(cb,img,xpos,ypos,width,height,radius);
-
-        String text0802 = dat.get(keys.get(item++));
-        addParagraph(text0802, cb,xpos,ypos-195f, xpos+width, ypos-5f,CANDARA_REGULAR,10f);
-        addWatermark(cb,CANDARA_BOLD);
-
-        page = writer.getImportedPage(reader, 9);
-        document.newPage();
-        cb.addTemplate(page, 0, 0);
-
-        img = Image.getInstance(datadir+"/"+dat.get(keys.get(item++)));
-        xpos = 55f;
-        ypos = 185f;
-        coef = 1.05f;
-        width = 460f*coef;
-        height = 17f*coef;
-        radius = height/2f;
-        img.setAbsolutePosition(xpos, ypos);
-
-        addParagraph("Ihr Ergebnis:", cb,xpos,ypos, xpos+width, ypos+50f,LATO_BOLD,15f);
-
-        drawGraphLarge(cb,img,xpos,ypos,width,height,radius);
-
-        String text0902 = dat.get(keys.get(item++));
-        addParagraph(text0902, cb,xpos,ypos-195f, xpos+width, ypos-5f,CANDARA_REGULAR,10f);
-        addWatermark(cb,CANDARA_BOLD);
-
-        page = writer.getImportedPage(reader, 10);
-        document.newPage();
-        cb.addTemplate(page, 0, 0);
-
-        xpos = 340f;
-        ypos = 342f;
-        coef = 0.50f;
-        width = 155f*coef;
-        height = 20f*coef;
-        radius = height/2f;
-
-        int item2 = item;
-        for(int i=item2;i<item2+5;i++) {
-            img = Image.getInstance(datadir + "/" + dat.get(keys.get(i)));
-            item++;
-            img.setAbsolutePosition(xpos, ypos);
-            drawGraphSmall(cb, img, xpos, ypos, width, height, radius);
-            ypos -= 28f;
-        }
-        addWatermark(cb,CANDARA_BOLD);
-
-        for(int i=11;i<18;i++){
-            page = writer.getImportedPage(reader, i);
-            document.newPage();
-            cb.addTemplate(page, 0, 0);
-            addWatermark(cb,CANDARA_BOLD);
-        }
-
-        if(!isDemo){
-            page = writer.getImportedPage(reader, 18);
-            document.newPage();
-            cb.addTemplate(page, 0, 0);
-        }
 
         for(int i=19;i<21;i++){
             page = writer.getImportedPage(reader, i);
