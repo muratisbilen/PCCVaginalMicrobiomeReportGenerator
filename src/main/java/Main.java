@@ -21,6 +21,8 @@ public class Main {
     private static InputStream lato;
     private static InputStream latobold;
     private static InputStream latoblack;
+    private static BaseFont CANDARA_REGULAR;
+    private static BaseFont LATO_BOLD;
     private static String datadir = "";
     private static String[] filesindatadir = new String[0];
     private static String indesignfile = "";
@@ -30,9 +32,9 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         if(isDemo){
-            datadir = "E:/PCC/R Scripts/Vaginal_Microbiome/Output/PCC_Vaginal_2023-11-24-14-13-13"; // Do not change this as it is specific to demo report.
+            datadir = "E:/PCC/R Scripts/Vaginal_Microbiome/Output/PCC_Vaginal_2024-02-15-13-22-32"; // Do not change this as it is specific to demo report.
         }else{
-            datadir = "E:/PCC/R Scripts/Vaginal_Microbiome/Output/PCC_Vaginal_2023-11-24-14-13-13";
+            datadir = "E:/PCC/R Scripts/Vaginal_Microbiome/Output/PCC_Vaginal_2024-02-15-13-22-32";
         }
         //datadir = args[0];
         filesindatadir = new File(datadir).list();
@@ -93,7 +95,7 @@ public class Main {
         document.open();
         PdfContentByte cb = writer.getDirectContent();
         byte[] bytes = IOUtils.toByteArray(candara);
-        BaseFont CANDARA_REGULAR = BaseFont.createFont("CenturyGothicPaneuropeanRegular.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, true, bytes, null);
+        CANDARA_REGULAR = BaseFont.createFont("CenturyGothicPaneuropeanRegular.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, true, bytes, null);
 
         byte[] bytes2 = IOUtils.toByteArray(candarabold);
         BaseFont CANDARA_BOLD = BaseFont.createFont("CenturyGothicPaneuropeanBold.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, true, bytes2, null);
@@ -102,7 +104,7 @@ public class Main {
         BaseFont LATO_REGULAR = BaseFont.createFont("Lato-Regular.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, true, bytes3, null);
 
         byte[] bytes4 = IOUtils.toByteArray(latobold);
-        BaseFont LATO_BOLD = BaseFont.createFont("Lato-Bold.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, true, bytes4, null);
+        LATO_BOLD = BaseFont.createFont("Lato-Bold.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, true, bytes4, null);
 
         byte[] bytes5 = IOUtils.toByteArray(latoblack);
         BaseFont LATO_BLACK = BaseFont.createFont("Lato-Black.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, true, bytes5, null);
@@ -143,20 +145,33 @@ public class Main {
         float width = 155f*coef;
         float height = 20f*coef;
         float radius = height/2f;
-        float[] yposadj = new float[]{40f,24f,72f,24f,24f,24f};
+        float boxwidth = 505f;
+        //These values are for large graph
+        xpos = 45f;
+        ypos = 750f;
+        coef = 0.75f;
+        width = 480f*coef;
+        height = 17f*coef;
+
 
         int item = 2;
 
-        for(int i=2;i<8;i++){
+        String[] chapters = new String[]{"Diversität des Mikrobioms (Shannon-Index)",
+                "Balance des Mikrobioms (Dysbiose-Index)",
+                "Endometriose",
+                "Fruchtbarkeit",
+                "HPV-Infektion",
+                "Pilzinfektionen"};
+
+        for(int i=2;i<14;i=i+2){
             Image img = Image.getInstance(datadir+"/"+dat.get(keys.get(i)));
-            ypos = ypos - yposadj[i-2];
+            String text = dat.get(keys.get(i+1));
+            String section = chapters[(i/2)-1];
             img.setAbsolutePosition(xpos, ypos);
 
-            drawGraphSmall(cb,img,xpos,ypos,width,height,radius);
-            item=i;
+            ypos = drawSummary(cb,section,text,img,xpos,ypos,width,height,boxwidth);
+            item=i+2;
         }
-
-        item++;
         addWatermark(cb,CANDARA_BOLD);
 
         page = writer.getImportedPage(reader, 4);
@@ -273,8 +288,8 @@ public class Main {
         document.newPage();
         cb.addTemplate(page, 0, 0);
 
-        xpos = 340f;
-        ypos = 342f;
+        xpos = 430f;
+        ypos = 295f;
         coef = 0.50f;
         width = 155f*coef;
         height = 20f*coef;
@@ -282,10 +297,20 @@ public class Main {
 
         int item2 = item;
         for(int i=item2;i<item2+5;i++) {
-            img = Image.getInstance(datadir + "/" + dat.get(keys.get(i)));
             item++;
-            img.setAbsolutePosition(xpos, ypos);
-            drawGraphSmall(cb, img, xpos, ypos, width, height, radius);
+            String detection = dat.get(keys.get(i));
+            if(detection.equals("JA")){
+                cb.setColorFill(BaseColor.RED);
+            }else{
+                cb.setColorFill(new BaseColor(0,184,0));
+            }
+
+            cb.beginText();
+            cb.setFontAndSize(LATO_BOLD, 10f);
+            cb.showTextAligned(PdfContentByte.ALIGN_CENTER, detection, xpos, ypos, 0);
+            cb.endText();
+
+            cb.setColorFill(BaseColor.BLACK);
             ypos -= 28f;
         }
         addWatermark(cb,CANDARA_BOLD);
@@ -297,11 +322,12 @@ public class Main {
             addWatermark(cb,CANDARA_BOLD);
         }
 
-        if(!isDemo){
+        //if(!isDemo){
             page = writer.getImportedPage(reader, 18);
             document.newPage();
             cb.addTemplate(page, 0, 0);
-        }
+            addWatermark(cb,CANDARA_BOLD);
+        //}
 
         for(int i=19;i<21;i++){
             page = writer.getImportedPage(reader, i);
@@ -391,6 +417,80 @@ public class Main {
             cb.showTextAligned(PdfContentByte.ALIGN_CENTER, "MUSTERBERICHT", 325f, 400f, 45);
             cb.endText();
         }
+    }
+
+    public static float drawSummary(PdfContentByte cb, String section, String text, Image img,float xpos,float ypos,float width, float height,float boxwidth) throws Exception{
+        byte[] bytes = IOUtils.toByteArray(candara);
+        BaseFont CANDARA_REGULAR = BaseFont.createFont("CenturyGothicPaneuropeanRegular.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, true, bytes, null);
+        byte[] bytes2 = IOUtils.toByteArray(candarabold);
+        BaseFont CANDARA_BOLD = BaseFont.createFont("CenturyGothicPaneuropeanBold.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, true, bytes2, null);
+
+        byte[] bytes4 = IOUtils.toByteArray(latobold);
+        BaseFont LATO_BOLD = BaseFont.createFont("Lato-Bold.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, true, bytes4, null);
+
+        cb.setColorFill(BaseColor.BLACK);
+        addParagraph(section,cb,xpos,ypos-1000f,xpos+width,ypos,LATO_BOLD,12f);
+
+        float bottom = addParagraphTemp(text,xpos+10f,ypos-50f,xpos+boxwidth-20f,ypos-1000f,CANDARA_REGULAR,10f);
+
+        cb.setColorFill(new BaseColor(240, 240, 240));
+        cb.rectangle(xpos,ypos-25f,boxwidth,-(ypos-10f-bottom));
+        cb.fill();
+
+        cb.setColorFill(BaseColor.BLACK);
+        addParagraph("Ihr Ergebnis:",cb,xpos+10f,ypos-30f,xpos+boxwidth-20f,ypos-1000f,CANDARA_BOLD,10f);
+
+        drawGraphLarge(cb,img,xpos+(boxwidth-width)/2+20f,(section.equals("Enterotyp 1, 2, oder 3?")? ypos-55f:ypos-50f),width,height,height/2);
+
+        cb.setColorFill(BaseColor.BLACK);
+        addParagraph(text,cb,xpos+10f,ypos-50,xpos+boxwidth-20f,ypos-1000f,CANDARA_REGULAR,10f);
+
+        return(bottom-30f);
+    }
+
+    public static float addParagraphTemp(String text, float x1,float y1, float x2, float y2,
+                                         BaseFont font,float size) throws Exception{
+        Rectangle rect = new Rectangle(x1, y1, x2, y2);
+
+        File tempFile = File.createTempFile("output", ".pdf");
+
+        com.itextpdf.text.Document document = new com.itextpdf.text.Document(PageSize.A4);
+        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(tempFile));
+        document.open();
+        PdfContentByte cb = writer.getDirectContent();
+
+        ColumnText columnText = new ColumnText(cb);
+        columnText.setSimpleColumn(rect);
+
+        Paragraph paragraph = new Paragraph();
+        paragraph.setAlignment(Element.ALIGN_LEFT);
+        paragraph.setFont(new Font(font,size));
+        paragraph.setLeading(18f);
+        paragraph.add(text);
+
+        columnText.addElement(paragraph);
+        columnText.go();
+
+        document.close();
+
+        return(columnText.getYLine());
+    }
+
+    public static void drawBox(PdfContentByte cb,float xpos, float ypos,float width,float height,float radius,Image img,String text, float... plotyadj) throws Exception{
+        float xpad = 20f;
+        float recbot = addParagraphTemp(text,xpos+xpad,ypos-195f, xpos+width-2*xpad, ypos-5f,CANDARA_REGULAR,10f);
+
+        cb.setColorFill(new BaseColor(240, 240, 240));
+        cb.rectangle(xpos,ypos+60f,width,-(ypos+70f-recbot+10f));
+        cb.fill();
+
+        cb.setColorFill(BaseColor.BLACK);
+        addParagraph("Ihr Ergebnis:", cb,xpos+xpad,ypos, xpos+width-2*xpad, ypos+50f,LATO_BOLD,15f);
+
+        drawGraphLarge(cb,img,xpos+xpad,ypos+(plotyadj.length==1?plotyadj[0]:0f),width-2*xpad,height*(1-2*xpad/width),radius*(1-2*xpad/width));
+
+        cb.setColorFill(BaseColor.BLACK);
+        addParagraph(text, cb,xpos+xpad,ypos-195f, xpos+width-2*xpad, ypos-5f,CANDARA_REGULAR,10f);
     }
 
 }
